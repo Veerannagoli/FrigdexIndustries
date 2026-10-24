@@ -1,44 +1,43 @@
 {% extends 'base.html' %}
-{% block title %}About Us | Frigdex Industries{% endblock %}
+{% block title %}About us | Frigdex Industries{% endblock %}
+{% block description %}Frigdex began in Tanuku in 1979 as a service business and grew into a maker and supplier of commercial cooling equipment across Andhra Pradesh.{% endblock %}
 {% block content %}
 <section class="page-banner">
-  <span>ABOUT FRIGDEX</span>
-  <h1>A journey of cooling solutions since 1979.</h1>
-  <p>Built on hard work, trusted relationships and a passion for serving customers across Andhra Pradesh.</p>
+  <h1>Cooling equipment, built on service, since 1979</h1>
+  <p>Frigdex started in Tanuku as a repair and service business. Today we make, supply and maintain commercial coolers for customers across Andhra Pradesh.</p>
 </section>
 
 <section class="section about-copy">
-  <h2>Our Story</h2>
-  <p>We are Frigdex, and our story is an exciting journey that began in 1979. We breathe sugar air and sip coconut water. Our central operations are based in Tanuku, in the West Godavari region of Andhra Pradesh—a place known as part of the state's rice bowl and for the Andhra Sugars factory.</p>
-  <p>Over the years, Frigdex has grown into a household name in commercial cooling appliances across Andhra Pradesh. We began as a service organisation and transformed into a manufacturing organisation. Later, we expanded to serve customers through a range of dealerships and distributorships.</p>
-  <p>Today, Frigdex is a single source for commercial cooling appliances—branded products, customised solutions, and service and repair support. We serve both business-to-business (B2B) and business-to-consumer (B2C) customers.</p>
-  <p>Our philosophy is simple: higher volumes and lower margins help us reach more people. This belief has helped us extend our reach to every corner of Andhra Pradesh.</p>
+  <h2>Our story</h2>
+  <p>Frigdex began in 1979 in Tanuku, in the West Godavari region of Andhra Pradesh, a part of the state known for its rice fields and the Andhra Sugars factory. Our central operations are still here.</p>
+  <p>Over the years Frigdex has become a familiar name for commercial cooling appliances across the state. We grew in three steps:</p>
+  <ol class="steps">
+    <li><b>Service.</b> We started by repairing and maintaining cooling equipment.</li>
+    <li><b>Manufacturing.</b> We began making our own appliances.</li>
+    <li><b>Dealerships and distribution.</b> We reached more towns through dealers and distributors.</li>
+  </ol>
+  <p>Today Frigdex is a single source for commercial cooling: branded products, customised solutions, and service and repair support. We serve both businesses and individual customers.</p>
+  <p>Our approach is simple. Higher volumes and lower margins let us reach more people, and that is how we have reached every corner of Andhra Pradesh.</p>
 
-  <h2>Our Visionary</h2>
-  <p>Affectionately known as “Pantulu Gaaru,” Ravi Shankar Gaaru is the visionary behind Frigdex. His journey—from a door-to-door mechanic to a respected name in the commercial cooling appliances industry—is one worth knowing.</p>
-  <p>Driven by hard work, determination and the ambition to build a financially strong future, he built the business brick by brick. We have never relied on shortcuts. Instead, we have trusted our instincts, built confidence through experience and made bold decisions when they mattered.</p>
+  <h2>Our founder</h2>
+  <p>Ravi Shankar Gaaru, known to everyone as “Pantulu Gaaru”, is the founder of Frigdex. He began as a door-to-door mechanic and built the business step by step into a respected name in commercial cooling.</p>
+  <p>He relied on hard work, experience and bold decisions at the right moments, never on shortcuts.</p>
 
-  <h2>What Makes Us Strong</h2>
+  <h2>What makes us strong</h2>
   <div class="value-grid">
-    <article>
-      <h3>Value-driven pricing</h3>
-      <p>Our focus on competitive pricing helps us make reliable cooling solutions accessible to more customers.</p>
-    </article>
-    <article>
-      <h3>Our people</h3>
-      <p>Our employees are at the heart of our work and the relationships we build with customers.</p>
-    </article>
-    <article>
-      <h3>Passion for leadership</h3>
-      <p>We are passionate about growing responsibly and earning a leading place in our industry.</p>
-    </article>
+    <div><h3>Fair prices</h3><p>Competitive pricing makes reliable cooling affordable for more customers.</p></div>
+    <div><h3>Our people</h3><p>Our team is at the heart of the work and of the relationships we build with customers.</p></div>
+    <div><h3>Growing responsibly</h3><p>We aim to earn a leading place in our industry, one satisfied customer at a time.</p></div>
   </div>
 
-  <h2>The Next Generation</h2>
-  <p>Kartik, the second-generation entrepreneur, brings youthful energy and a forward-looking approach to the business. He aims to follow the visionary's footsteps while transforming hard work into smart work, simplifying demanding tasks through automation and using AI to improve operational efficiency.</p>
-  <p>As we embrace this transition, one thing remains unchanged: our commitment to our customers and the smile we strive to bring to every customer.</p>
+  <h2>The next generation</h2>
+  <p>Kartik, the founder's son, represents the second generation of the business. He is following his father's path while making the work smarter: simplifying demanding tasks with automation and using AI to improve how we operate.</p>
+  <p>What stays the same is our commitment to customers and the smile we want to leave with each of them.</p>
 
-  <h2>Grow with Frigdex</h2>
-  <p>Come join us and experience the benefits of our products and services. We look forward to serving you.</p>
+  <div class="about-cta">
+    <h2>Work with us</h2>
+    <p>Tell us what you need and we will help you choose.</p>
+    <a class="btn btn-teal" href="{{ url_for('contact') }}">Request a quote</a>
+  </div>
 </section>
 {% endblock %}

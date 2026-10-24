@@ -1,1 +1,26 @@
-{% extends 'base.html' %}{% block title %}{{ product.name }} | Frigdex{% endblock %}{% block content %}<section class="section detail-wrap"><div class="detail-image">{% if product.image_url %}<img src="{{ product.image_url if product.image_url.startswith('http') else url_for('static',filename=product.image_url.replace('/static/','')) }}" alt="{{ product.name }}">{% else %}<div class="image-placeholder big">❄</div>{% endif %}</div><div class="detail-copy"><span class="eyebrow dark">{{ product.brand }} · {{ product.category }}</span><h1>{{ product.name }}</h1><div class="detail-price">{{ money(product.price) }} <small>Ask for latest price</small></div><table class="spec-table">{% for label,value in [('Model',product.model),('Capacity',product.capacity),('Refrigerant',product.refrigerant),('Temperature range',product.temperature_range),('Power consumption',product.power_consumption),('Door type',product.door_type),('Colour',product.color),('Available stock',product.stock)] %}{% if value %}<tr><th>{{ label }}</th><td>{{ value }}</td></tr>{% endif %}{% endfor %}</table><p>{{ product.description }}</p><a class="btn btn-teal" href="{{ url_for('contact') }}?product={{ product.id }}">Request product quote →</a></div></section>{% endblock %}
+{% extends 'base.html' %}{% from '_icons.html' import icon %}
+{% block title %}{{ product.name }} | Frigdex Industries{% endblock %}
+{% block description %}{{ product.name }}{% if product.model %} ({{ product.model }}){% endif %} from Frigdex Industries, Tanuku. Request a quote or call for price and availability.{% endblock %}
+{% block content %}
+{% set img = (product.image_url if product.image_url.startswith('http') else url_for('static', filename=product.image_url.replace('/static/',''))) if product.image_url else '' %}
+{% set quote_text = 'Hello Frigdex Industries, I would like a quote for ' ~ product.name ~ (' (' ~ product.model ~ ')' if product.model else '') ~ '.' %}
+<section class="section detail-wrap">
+  <div class="detail-image">{% if img %}<img src="{{ img }}" alt="{{ product.name }}">{% else %}<span class="image-placeholder big">{{ icon('snow', 80) }}</span>{% endif %}</div>
+  <div class="detail-copy">
+    <p class="crumbs"><a href="{{ url_for('products') }}">Products</a> / <a href="{{ url_for('products', category=product.category) }}">{{ product.category }}</a></p>
+    <h1>{{ product.name }}</h1>
+    {% if product.brand %}<p class="detail-brand">by {{ product.brand }}</p>{% endif %}
+    <p class="detail-price {% if not product.price or product.price|float <= 0 %}on-request{% endif %}">{{ price_label(product.price) }}</p>
+    <p class="detail-note">Confirm the latest price and stock with us before you order.</p>
+    <div class="btn-row detail-actions">
+      <a class="btn btn-teal" href="{{ url_for('contact') }}?product={{ product.id }}">Request a quote</a>
+      {% if site.phone %}<a class="btn btn-outline" href="tel:{{ site.phone_tel }}">Call for price</a>{% endif %}
+      {% if site.whatsapp %}<a class="btn btn-wa" href="{{ wa_link(quote_text) }}" target="_blank" rel="noopener">WhatsApp</a>{% endif %}
+    </div>
+    {% if product.description %}<p class="detail-desc">{{ product.description }}</p>{% endif %}
+    <table class="spec-table"><caption class="sr-only">Specifications</caption>
+    {% for label,value in [('Model',product.model),('Capacity',product.capacity),('Refrigerant',product.refrigerant),('Temperature range',product.temperature_range),('Power consumption',product.power_consumption),('Door type',product.door_type),('Colour',product.color),('Availability','In stock' if product.stock and product.stock > 0 else 'Available on order')] %}{% if value %}<tr><th scope="row">{{ label }}</th><td>{{ value }}</td></tr>{% endif %}{% endfor %}
+    </table>
+  </div>
+</section>
+{% endblock %}

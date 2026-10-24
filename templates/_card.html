@@ -1,0 +1,12 @@
+{% macro product_card(p, show_capacity=False) -%}
+{%- set img = (p.image_url if p.image_url.startswith('http') else url_for('static', filename=p.image_url.replace('/static/',''))) if p.image_url else '' -%}
+<article class="product-card">
+  <div class="product-image">{% if img %}<img src="{{ img }}" alt="{{ p.name }}" loading="lazy">{% else %}<span class="image-placeholder">{{ caller() if caller else '' }}</span>{% endif %}</div>
+  <div class="product-info">
+    {% if p.brand %}<span class="product-brand">{{ p.brand }}</span>{% endif %}
+    <h3><a href="{{ url_for('product_detail', product_id=p.id) }}">{{ p.name }}</a></h3>
+    <p class="product-meta">{{ p.model }}{% if show_capacity and p.capacity %}, {{ p.capacity }}{% endif %}</p>
+    <p class="product-price {% if not p.price or p.price|float <= 0 %}on-request{% endif %}">{{ price_label(p.price) }}</p>
+  </div>
+</article>
+{%- endmacro %}

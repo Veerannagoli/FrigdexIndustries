@@ -1,4 +1,6 @@
+import hmac
 import os
+import secrets
 import uuid
 from datetime import date, datetime
 from decimal import Decimal
@@ -96,15 +98,69 @@ def money(value):
         return "₹0.00"
 
 
+def price_label(value):
+    """Public price text. A price of 0 means the price has not been fixed yet."""
+    try:
+        if Decimal(str(value or 0)) <= 0:
+            return "Price on request"
+    except Exception:
+        return "Price on request"
+    return money(value)
+
+
+def csrf_token():
+    if "_csrf" not in session:
+        session["_csrf"] = secrets.token_hex(16)
+    return session["_csrf"]
+
+
+def whatsapp_digits():
+    return "".join(ch for ch in os.getenv("WHATSAPP_NUMBER", "") if ch.isdigit())
+
+
+def whatsapp_link(text=""):
+    number = whatsapp_digits()
+    if not number:
+        return ""
+    return f"https://wa.me/{number}" + (f"?text={quote(text)}" if text else "")
+
+
 @app.context_processor
 def inject_helpers():
-    return {"money": money, "current_year": datetime.now().year}
+    phone = os.getenv("SITE_PHONE", "").strip()
+    site = {
+        "phone": phone,
+        "phone_tel": "".join(ch for ch in phone if ch.isdigit() or ch == "+"),
+        "email": os.getenv("SITE_EMAIL", "").strip(),
+        "gst": os.getenv("GST_NUMBER", "").strip(),
+        "whatsapp": whatsapp_link("Hello Frigdex Industries, I would like to know more about your products."),
+        "has_hero_photo": (UPLOAD_DIR.parent / "hero.jpg").exists(),
+    }
+    return {
+        "money": money,
+        "price_label": price_label,
+        "wa_link": whatsapp_link,
+        "csrf_token": csrf_token,
+        "site": site,
+        "current_year": datetime.now().year,
+    }
+
+
+@app.before_request
+def check_csrf():
+    if request.method == "POST":
+        sent = request.form.get("csrf_token", "")
+        if not hmac.compare_digest(sent, session.get("_csrf", "")):
+            return render_template(
+                "error.html", title="This page has expired",
+                message="Please go back, refresh the page and try again."), 400
 
 
 @app.get("/")
 def home():
     featured = query("SELECT * FROM products WHERE is_active=1 ORDER BY created_at DESC LIMIT 6")
-    return render_template("home.html", products=featured)
+    brands = query("SELECT DISTINCT brand FROM products WHERE is_active=1 AND brand<>'' ORDER BY brand")
+    return render_template("home.html", products=featured, brands=brands)
 
 
 @app.get("/products")
@@ -166,7 +222,13 @@ def contact():
                 return redirect(f"https://wa.me/{whatsapp_number}?text={quote(whatsapp_message)}")
             flash("Your enquiry was saved, but WhatsApp is not configured yet. Please contact the website administrator.", "error")
             return redirect(url_for("contact"))
-    return render_template("contact.html")
+    product_name = ""
+    product_id = request.args.get("product", type=int)
+    if product_id:
+        found = query("SELECT name, model FROM products WHERE id=%s AND is_active=1", (product_id,), one=True)
+        if found:
+            product_name = found["name"] + (f" ({found['model']})" if found["model"] else "")
+    return render_template("contact.html", product_name=product_name)
 
 
 @app.get("/admin/login")
@@ -187,7 +249,10 @@ def login_post():
         session["admin_id"] = admin["id"]
         session["admin_username"] = admin["username"]
         execute("UPDATE admin_users SET last_login=NOW() WHERE id=%s", (admin["id"],))
-        return redirect(request.args.get("next") or url_for("admin_dashboard"))
+        target = request.args.get("next", "")
+        if not target.startswith("/") or target.startswith("//"):
+            target = url_for("admin_dashboard")
+        return redirect(target)
     flash("Username or password is incorrect.", "error")
     return redirect(url_for("login"))
 
@@ -381,9 +446,18 @@ def reports():
     return render_template("reports.html", daily=daily, by_brand=by_brand)
 
 
+@app.errorhandler(404)
+def not_found(error):
+    return render_template(
+        "error.html", title="Page not found",
+        message="The page you are looking for does not exist or has been moved."), 404
+
+
 @app.errorhandler(500)
 def server_error(error):
-    return render_template("error.html", message="Something went wrong. Check the terminal for the detailed error."), 500
+    return render_template(
+        "error.html", title="Something went wrong",
+        message="Please try again in a moment. If it keeps happening, call us or send an enquiry."), 500
 
 
 if __name__ == "__main__":

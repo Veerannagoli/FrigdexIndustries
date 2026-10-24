@@ -1,1 +1,2 @@
-{% extends 'base.html' %}{% block title %}Error{% endblock %}{% block content %}<section class="section center"><h1>Something went wrong</h1><p>{{ message }}</p><a class="btn btn-teal" href="{{ url_for('home') }}">Back to home</a></section>{% endblock %}
+{% extends 'base.html' %}{% block title %}{{ title or 'Something went wrong' }} | Frigdex Industries{% endblock %}
+{% block content %}<section class="section error-page"><h1>{{ title or 'Something went wrong' }}</h1><p>{{ message }}</p><div class="btn-row"><a class="btn btn-teal" href="{{ url_for('home') }}">Back to home</a><a class="btn btn-outline" href="{{ url_for('products') }}">See products</a></div></section>{% endblock %}
