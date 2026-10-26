@@ -3,7 +3,7 @@
 {% set hero_img = url_for('static', filename='hero.jpg') if site.has_hero_photo else 'https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?auto=format&fit=crop&w=1800&q=80' %}
 <section class="hero has-photo" style="--hero-photo:url('{{ hero_img }}')">
   <div class="hero-copy">
-    <h1>Freezers and visi coolers, made and serviced in Tanuku since 1979.</h1>
+    <h1>Refrigeration Appliances made and serviced in Tanuku since 1979.</h1>
     <p>Deep freezers, visi coolers and bottle coolers for shops, hotels, dairies and ice cream sellers across Andhra Pradesh. Tell us what you store and we will suggest the right model.</p>
     <div class="btn-row">
       <a class="btn btn-light" href="{{ url_for('products') }}">See products</a>
