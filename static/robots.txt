@@ -1,0 +1,1 @@
+User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /admin/\n\nSitemap: https://frigdex.in/sitemap.xml\n

@@ -1,8 +1,46 @@
 {% from '_icons.html' import icon %}{% set ep = request.endpoint %}<!doctype html>
 <html lang="en"><head>
 {% include '_head.html' %}
-<title>{% block title %}Frigdex Industries | Commercial refrigeration in Tanuku{% endblock %}</title>
-<meta name="description" content="{% block description %}Deep freezers, visi coolers and bottle coolers from Frigdex Industries, Tanuku. Sales, service and repair across Andhra Pradesh since 1979.{% endblock %}">
+{% set page_title = self.title()|striptags|trim %}
+{% set page_description = self.description()|striptags|trim %}
+<title>{{ page_title }}</title>
+<meta name="description" content="{{ page_description }}">
+<link rel="canonical" href="https://frigdex.in{{ request.path }}">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Frigdex Industries">
+<meta property="og:title" content="{{ page_title }}">
+<meta property="og:description" content="{{ page_description }}">
+<meta property="og:url" content="https://frigdex.in{{ request.path }}">
+<meta property="og:image" content="{{ url_for('static', filename='images/logo.png', _external=True) }}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{{ page_title }}">
+<meta name="twitter:description" content="{{ page_description }}">
+<meta name="twitter:image" content="{{ url_for('static', filename='images/logo.png', _external=True) }}">
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Frigdex Industries",
+  "url": "https://frigdex.in/",
+  "logo": "https://frigdex.in{{ url_for('static', filename='images/logo.png') }}",
+  "image": "https://frigdex.in{{ url_for('static', filename='images/logo.png') }}",
+  "description": "Commercial refrigeration equipment, sales, service and repair in Tanuku, Andhra Pradesh.",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Plot No. 33, Industrial Area, Tanuku Y Junction, Tetali",
+    "addressLocality": "Tanuku",
+    "addressRegion": "Andhra Pradesh",
+    "addressCountry": "IN"
+  },
+  "areaServed": {
+    "@type": "State",
+    "name": "Andhra Pradesh"
+  }
+}
+</script>
+{% endblock %}
 </head>
 <body class="{% if site.phone or site.whatsapp %}has-bar{% endif %}">
 <a class="skip" href="#main">Skip to content</a>

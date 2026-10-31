@@ -1,6 +1,21 @@
 {% extends 'base.html' %}{% from '_icons.html' import icon %}
 {% block title %}{{ product.name }} | Frigdex Industries{% endblock %}
 {% block description %}{{ product.name }}{% if product.model %} ({{ product.model }}){% endif %} from Frigdex Industries, Tanuku. Request a quote or call for price and availability.{% endblock %}
+{% block structured_data %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": {{ product.name|tojson }},
+  "description": {{ (product.description or (product.name ~ " from Frigdex Industries, Tanuku, Andhra Pradesh."))|tojson }},
+  "brand": {
+    "@type": "Brand",
+    "name": {{ (product.brand or "Frigdex Industries")|tojson }}
+  },
+  "url": "https://frigdex.in{{ request.path }}"
+}
+</script>
+{% endblock %}
 {% block content %}
 {% set img = (product.image_url if product.image_url.startswith('http') else url_for('static', filename=product.image_url.replace('/static/',''))) if product.image_url else '' %}
 {% set quote_text = 'Hello Frigdex Industries, I would like a quote for ' ~ product.name ~ (' (' ~ product.model ~ ')' if product.model else '') ~ '.' %}

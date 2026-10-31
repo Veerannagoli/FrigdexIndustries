@@ -1,4 +1,6 @@
 {% extends 'base.html' %}{% from '_icons.html' import icon %}{% from '_card.html' import product_card with context %}
+{% block title %}Commercial Refrigeration & Deep Freezers in Tanuku | Frigdex{% endblock %}
+{% block description %}Shop deep freezers, visi coolers and bottle coolers from Frigdex Industries in Tanuku, Andhra Pradesh. Commercial refrigeration sales, service and repair.{% endblock %}
 {% block content %}
 {% set hero_img = url_for('static', filename='hero.jpg') if site.has_hero_photo else 'https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?auto=format&fit=crop&w=1800&q=80' %}
 <section class="hero has-photo" style="--hero-photo:url('{{ hero_img }}')">

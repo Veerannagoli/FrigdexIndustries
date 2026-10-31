@@ -3,6 +3,7 @@ import os
 import secrets
 import uuid
 from datetime import date, datetime
+from xml.etree.ElementTree import Element, SubElement, tostring
 from decimal import Decimal
 from functools import wraps
 from pathlib import Path
@@ -146,6 +147,59 @@ def inject_helpers():
     }
 
 
+@app.get("/robots.txt")
+def robots_txt():
+    """Tell search engines which public areas may be crawled."""
+    body = """User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+
+Sitemap: https://frigdex.in/sitemap.xml
+"""
+    return Response(body, mimetype="text/plain")
+
+
+@app.get("/sitemap.xml")
+def sitemap():
+    """Build a sitemap from public pages and currently active products."""
+    namespace = "http://www.sitemaps.org/schemas/sitemap/0.9"
+    root = Element("urlset", xmlns=namespace)
+    base_url = "https://frigdex.in"
+
+    def add_url(path, priority, changefreq="monthly", lastmod=None):
+        item = SubElement(root, "url")
+        SubElement(item, "loc").text = f"{base_url}{path}"
+        if lastmod:
+            if hasattr(lastmod, "date"):
+                lastmod = lastmod.date()
+            if hasattr(lastmod, "isoformat"):
+                SubElement(item, "lastmod").text = lastmod.isoformat()
+        SubElement(item, "changefreq").text = changefreq
+        SubElement(item, "priority").text = priority
+
+    add_url("/", "1.0", "weekly")
+    add_url("/products", "0.9", "weekly")
+    add_url("/about", "0.7", "monthly")
+    add_url("/contact", "0.7", "monthly")
+
+    active_products = query(
+        "SELECT id, created_at FROM products WHERE is_active=1 ORDER BY id"
+    )
+    for product in active_products:
+        add_url(
+            url_for("product_detail", product_id=product["id"]),
+            "0.8",
+            "weekly",
+            product.get("created_at"),
+        )
+
+    xml_bytes = tostring(root, encoding="utf-8", xml_declaration=True)
+    response = Response(xml_bytes, mimetype="application/xml")
+    response.headers["Cache-Control"] = "public, max-age=3600"
+    return response
+
+
 @app.before_request
 def check_csrf():
     if request.method == "POST":
@@ -154,30 +208,6 @@ def check_csrf():
             return render_template(
                 "error.html", title="This page has expired",
                 message="Please go back, refresh the page and try again."), 400
-
-
-@app.get("/sitemap.xml")
-def sitemap():
-    """Serve an XML sitemap for the public Frigdex Industries pages."""
-    pages = [
-        ("https://frigdex.in/", "weekly", "1.0"),
-        ("https://frigdex.in/products", "weekly", "0.9"),
-        ("https://frigdex.in/about", "monthly", "0.8"),
-        ("https://frigdex.in/contact", "monthly", "0.8"),
-    ]
-
-    urls = "\n".join(
-        f"    <url><loc>{loc}</loc><changefreq>{frequency}</changefreq>"
-        f"<priority>{priority}</priority></url>"
-        for loc, frequency, priority in pages
-    )
-    xml = (
-        '<?xml version="1.0" encoding="UTF-8"?>\n'
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-        f'{urls}\n'
-        '</urlset>'
-    )
-    return Response(xml, mimetype="application/xml")
 
 
 @app.get("/")
