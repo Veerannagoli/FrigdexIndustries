@@ -6,7 +6,9 @@
 </head>
 <body class="login-page">
 <main class="login-card">
-  <a class="brand" href="{{ url_for('home') }}"><span class="brand-mark">{{ icon('snow', 24) }}</span><span class="brand-text"><b>Frigdex</b><small>Administration</small></span></a>
+  <a class="brand login-brand" href="{{ url_for('home') }}" aria-label="Frigdex Industries home">
+    <img class="brand-logo-image" src="{{ url_for('static', filename='images/logo.png') }}" alt="Frigdex Industries">
+  </a>
   <h1>Sign in</h1>
   <p>Manage products, enquiries and sales records.</p>
   {% with messages=get_flashed_messages(with_categories=true) %}{% for category,message in messages %}<div class="flash {{ category }}" role="alert">{{ message }}</div>{% endfor %}{% endwith %}

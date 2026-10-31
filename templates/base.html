@@ -8,8 +8,7 @@
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-head">
   <a class="brand" href="{{ url_for('home') }}" aria-label="Frigdex Industries home">
-    <span class="brand-mark">{{ icon('snow', 24) }}</span>
-    <span class="brand-text"><b>Frigdex</b><small>Industries</small></span>
+    <img class="brand-logo-image" src="{{ url_for('static', filename='images/logo.png') }}" alt="Frigdex Industries">
   </a>
   <nav aria-label="Main">
     <a href="{{ url_for('home') }}" {% if ep == 'home' %}aria-current="page"{% endif %}>Home</a>

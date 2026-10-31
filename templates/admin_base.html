@@ -7,7 +7,9 @@
 <body class="admin-body">
 <a class="skip" href="#main">Skip to content</a>
 <aside class="sidebar">
-  <a class="brand" href="{{ url_for('admin_dashboard') }}"><span class="brand-mark">{{ icon('snow', 24) }}</span><span class="brand-text"><b>Frigdex</b><small>Control desk</small></span></a>
+  <a class="brand admin-brand" href="{{ url_for('admin_dashboard') }}" aria-label="Frigdex Industries admin dashboard">
+    <img class="brand-logo-image" src="{{ url_for('static', filename='images/logo.png') }}" alt="Frigdex Industries">
+  </a>
   <nav aria-label="Admin">
     <a class="side-link" href="{{ url_for('admin_dashboard') }}" {% if ep == 'admin_dashboard' %}aria-current="page"{% endif %}>{{ icon('overview', 18) }} Overview</a>
     <a class="side-link" href="{{ url_for('admin_products') }}" {% if ep in ('admin_products','product_form') %}aria-current="page"{% endif %}>{{ icon('products', 18) }} Products</a>
