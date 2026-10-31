@@ -9,7 +9,7 @@ from pathlib import Path
 from urllib.parse import quote
 
 import mysql.connector
-from flask import Flask, abort, flash, redirect, render_template, request, session, url_for
+from flask import Flask, Response, abort, flash, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
 
@@ -154,6 +154,30 @@ def check_csrf():
             return render_template(
                 "error.html", title="This page has expired",
                 message="Please go back, refresh the page and try again."), 400
+
+
+@app.get("/sitemap.xml")
+def sitemap():
+    """Serve an XML sitemap for the public Frigdex Industries pages."""
+    pages = [
+        ("https://frigdex.in/", "weekly", "1.0"),
+        ("https://frigdex.in/products", "weekly", "0.9"),
+        ("https://frigdex.in/about", "monthly", "0.8"),
+        ("https://frigdex.in/contact", "monthly", "0.8"),
+    ]
+
+    urls = "\n".join(
+        f"    <url><loc>{loc}</loc><changefreq>{frequency}</changefreq>"
+        f"<priority>{priority}</priority></url>"
+        for loc, frequency, priority in pages
+    )
+    xml = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f'{urls}\n'
+        '</urlset>'
+    )
+    return Response(xml, mimetype="application/xml")
 
 
 @app.get("/")
